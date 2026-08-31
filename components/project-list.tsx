@@ -133,12 +133,6 @@ export function ProjectList() {
                   </div>
                   <CardDescription>{project.clientName}</CardDescription>
                 </CardHeader>
-                <CardContent className="pb-2">
-                  <div className="text-sm">
-                    <span className="font-medium">{project.hourlyRate} kr/hr</span>
-                    {project.addVat && <span className="text-muted-foreground"> + MVA</span>}
-                  </div>
-                </CardContent>
                 <CardFooter>
                   <div className="text-sm text-muted-foreground">Click to view details and time entries</div>
                 </CardFooter>
