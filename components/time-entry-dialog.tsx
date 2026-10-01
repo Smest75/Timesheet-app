@@ -1,5 +1,6 @@
 "use client"
-import { useForm, useEffect as useFormEffect } from "react-hook-form"
+import { useEffect } from "react"
+import { useForm } from "react-hook-form"
 import {
   Dialog,
   DialogContent,
@@ -47,7 +48,7 @@ export function TimeEntryDialog({ open, onOpenChange, projectId, timeEntryToEdit
   })
 
   // Reset form when timeEntryToEdit changes or dialog opens/closes
-  useFormEffect(() => {
+  useEffect(() => {
     if (open) {
       reset(
         timeEntryToEdit || {

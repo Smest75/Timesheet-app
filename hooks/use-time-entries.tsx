@@ -10,6 +10,7 @@ interface TimeEntriesContextType {
   addTimeEntry: (entry: TimeEntry) => void
   updateTimeEntry: (entry: TimeEntry) => void
   deleteTimeEntry: (id: string) => void
+  replaceTimeEntries: (entries: TimeEntry[]) => void
 }
 
 const TimeEntriesContext = createContext<TimeEntriesContextType>({
@@ -17,10 +18,14 @@ const TimeEntriesContext = createContext<TimeEntriesContextType>({
   addTimeEntry: () => {},
   updateTimeEntry: () => {},
   deleteTimeEntry: () => {},
+  replaceTimeEntries: () => {},
 })
 
 export function TimeEntriesProvider({ children }: { children: React.ReactNode }) {
   const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([])
+  // Don't write to localStorage until the saved data has been read, so a
+  // reload can never overwrite stored data with the initial empty list
+  const [isLoaded, setIsLoaded] = useState(false)
 
   // Load time entries from localStorage on mount
   useEffect(() => {
@@ -32,12 +37,14 @@ export function TimeEntriesProvider({ children }: { children: React.ReactNode })
         console.error("Failed to parse time entries from localStorage", error)
       }
     }
+    setIsLoaded(true)
   }, [])
 
   // Save time entries to localStorage whenever they change
   useEffect(() => {
+    if (!isLoaded) return
     localStorage.setItem("timesheet-entries", JSON.stringify(timeEntries))
-  }, [timeEntries])
+  }, [timeEntries, isLoaded])
 
   const addTimeEntry = (entry: TimeEntry) => {
     setTimeEntries((prev) => [...prev, entry])
@@ -51,8 +58,12 @@ export function TimeEntriesProvider({ children }: { children: React.ReactNode })
     setTimeEntries((prev) => prev.filter((entry) => entry.id !== id))
   }
 
+  const replaceTimeEntries = (entries: TimeEntry[]) => {
+    setTimeEntries(entries)
+  }
+
   return (
-    <TimeEntriesContext.Provider value={{ timeEntries, addTimeEntry, updateTimeEntry, deleteTimeEntry }}>
+    <TimeEntriesContext.Provider value={{ timeEntries, addTimeEntry, updateTimeEntry, deleteTimeEntry, replaceTimeEntries }}>
       {children}
     </TimeEntriesContext.Provider>
   )

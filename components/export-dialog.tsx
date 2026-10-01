@@ -163,7 +163,7 @@ export function ExportDialog({ open, onOpenChange, project, timeEntries }: Expor
             <Checkbox
               id="includeInternalNotes"
               checked={includeInternalNotes}
-              onCheckedChange={setIncludeInternalNotes}
+              onCheckedChange={(checked) => setIncludeInternalNotes(checked === true)}
             />
             <Label htmlFor="includeInternalNotes">Include internal notes in export</Label>
           </div>
