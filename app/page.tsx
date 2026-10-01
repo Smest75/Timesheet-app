@@ -1,3 +1,4 @@
+import { BackupButton, BackupReminder } from "@/components/backup-controls"
 import { ProjectList } from "@/components/project-list"
 import { TimerWidget } from "@/components/timer-widget"
 
@@ -10,8 +11,12 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-tight">Timesheet</h1>
             <p className="text-muted-foreground">Track your consulting hours and projects</p>
           </div>
-          <TimerWidget />
+          <div className="flex flex-wrap items-center gap-2">
+            <TimerWidget />
+            <BackupButton />
+          </div>
         </div>
+        <BackupReminder />
         <ProjectList />
       </div>
     </div>
