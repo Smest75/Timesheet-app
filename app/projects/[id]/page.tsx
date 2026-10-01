@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft, Clock, Edit, Trash2, Calendar, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,9 +15,10 @@ import { useTimeEntries } from "@/hooks/use-time-entries"
 import { formatDate, formatDuration } from "@/lib/utils"
 import type { Project, TimeEntry } from "@/lib/types"
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
+export default function ProjectPage() {
+  const { id } = useParams<{ id: string }>()
   const router = useRouter()
-  const { projects, deleteProject } = useProjects()
+  const { projects, isLoaded, deleteProject } = useProjects()
   const { timeEntries, deleteTimeEntry } = useTimeEntries()
   const [project, setProject] = useState<Project | null>(null)
   const [projectEntries, setProjectEntries] = useState<TimeEntry[]>([])
@@ -29,13 +30,15 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   const [entryToDelete, setEntryToDelete] = useState<string | undefined>(undefined)
 
   useEffect(() => {
-    const foundProject = projects.find((p) => p.id === params.id)
+    // Wait for saved projects to load, so a reload doesn't bounce back to the front page
+    if (!isLoaded) return
+    const foundProject = projects.find((p) => p.id === id)
     if (foundProject) {
       setProject(foundProject)
     } else {
       router.push("/")
     }
-  }, [params.id, projects, router])
+  }, [id, projects, isLoaded, router])
 
   useEffect(() => {
     if (project) {
